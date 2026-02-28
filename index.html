@@ -449,11 +449,10 @@ body::after{
 
 
 
-/* ══════════════════════════════════════════
-   RESPONSIVE — CLEAN VERSION
-══════════════════════════════════════════ */
 
-/* ─ DESKTOP default: full book side-by-side, fixed height ─ */
+/* ══════════════════════════════════════════
+   DESKTOP — BOOK LAYOUT
+══════════════════════════════════════════ */
 #open-book{
   width:min(94vw,1060px);
   height:min(86vh,660px);
@@ -462,118 +461,222 @@ body::after{
 .page-left,.page-right{flex:1;height:100%;}
 .page-content{height:100%;overflow:hidden;}
 
-/* ─ LARGE DESKTOP ─ */
 @media(min-width:1400px){
   #open-book{width:min(88vw,1200px);height:min(82vh,740px);}
   .body-text{font-size:.8rem;}
   .chapter-title{font-size:1.5rem;}
 }
-
-/* ─ TABLET (769–1024px): keep book shape but slightly smaller ─ */
-@media(max-width:1024px) and (min-width:769px){
-  #open-book{width:96vw;height:min(82vh,600px);}
-  .page-content{padding:1.8rem 1.6rem;}
-  .page-right .page-content{padding:1.8rem 1.6rem;}
-  .chapter-title{font-size:1.1rem;}
+@media(max-width:1100px) and (min-width:769px){
+  #open-book{width:96vw;height:min(82vh,580px);}
+  .page-content{padding:1.7rem 1.4rem;}
+  .page-right .page-content{padding:1.7rem 1.4rem;}
+  .chapter-title{font-size:1.05rem;}
   .body-text{font-size:.7rem;}
-  .skill-row-name{width:110px;font-size:.42rem;}
-  .nav-arrow.prev{left:-42px;}
-  .nav-arrow.next{right:-42px;}
+  .skill-row-name{width:108px;font-size:.41rem;}
+  .nav-arrow.prev{left:-44px;}
+  .nav-arrow.next{right:-44px;}
 }
 
-/* ─ MOBILE/SMALL TABLET (≤768px): single page scroll view ─ */
+/* ══════════════════════════════════════════
+   MOBILE BOOK — single page view
+══════════════════════════════════════════ */
 @media(max-width:768px){
-  html,body{overflow-x:hidden;}
-  body{align-items:flex-start;overflow-y:auto;}
-  #scene{
-    min-height:100vh;height:auto;
-    display:block;
-    padding:2rem 0 5rem;
-    perspective:none;
+  html,body{
+    overflow:hidden;
+    height:100%;width:100%;
+    touch-action:pan-y;
   }
-  /* closed book centered */
+  #scene{
+    width:100vw;height:100dvh;
+    perspective:none;
+    overflow:hidden;
+  }
+
+  /* ── CLOSED BOOK on mobile ── */
   #closed-book{
     position:relative;
-    left:50%;transform:translateX(-50%) rotateY(-12deg) rotateX(4deg);
-    margin-bottom:1rem;
+    transform:rotateY(-14deg) rotateX(5deg) scale(.9);
   }
   #open-btn{
-    position:relative;
+    position:absolute;bottom:-44px;
     left:50%;transform:translateX(-50%);
-    bottom:auto;margin-top:12px;display:block;
-    white-space:nowrap;
   }
-  /* open book: full width, stacked pages */
+
+  /* ── OPEN BOOK: full screen single page ── */
   #open-book{
-    position:relative;
-    left:50%;transform:translateX(-50%) !important;
-    width:96vw;
-    height:auto;
-    flex-direction:column;
-    filter:drop-shadow(0 8px 30px rgba(0,0,0,.7));
+    position:absolute;
+    width:100vw;
+    height:100dvh;
+    flex-direction:row;   /* keep rows — we hide one side */
+    border-radius:0;
+    filter:none;
   }
-  #open-book.visible{
-    opacity:1;
-    transform:translateX(-50%) !important;
-  }
-  .page-left{
-    width:100%;height:auto;
-    border-radius:3px 3px 0 0;
-    border-bottom:1px solid rgba(26,16,10,.12);
-  }
-  .page-right{
-    width:100%;height:auto;
-    border-radius:0 0 3px 3px;
-  }
-  .page-content{
-    height:auto;overflow:visible;
-    padding:1.6rem 1.4rem;
-  }
-  .page-right .page-content{padding:1.6rem 1.4rem;}
-  .page-number{margin-top:.8rem;}
+  /* hide spine crease on mobile */
   .book-spine-crease{display:none;}
   #ribbon{display:none;}
-  /* arrows below */
-  .nav-arrow{
-    position:fixed;
-    top:auto;bottom:1.5rem;
-    transform:none;
-    z-index:500;
+
+  /* show only left OR right based on active-side class */
+  #open-book .page-left{
+    position:absolute;inset:0;
+    width:100%;height:100%;
+    border-radius:0;
+    transition:transform .45s cubic-bezier(.4,0,.2,1), opacity .35s;
+    transform:translateX(0);
+    opacity:1;
+    z-index:2;
   }
-  .nav-arrow.prev{left:1rem;}
-  .nav-arrow.next{right:1rem;}
-  #chap-indicator{
-    position:fixed;bottom:.9rem;
-    left:50%;transform:translateX(-50%);
+  #open-book .page-right{
+    position:absolute;inset:0;
+    width:100%;height:100%;
+    border-radius:0;
+    transition:transform .45s cubic-bezier(.4,0,.2,1), opacity .35s;
+    transform:translateX(100%);
+    opacity:0;
+    z-index:1;
   }
-  #close-btn{
-    position:fixed;bottom:1.4rem;
-    left:50%;transform:translateX(-50%);
+  /* when showing right page */
+  #open-book.show-right .page-left{
+    transform:translateX(-100%);
+    opacity:0;
+    z-index:1;
   }
+  #open-book.show-right .page-right{
+    transform:translateX(0);
+    opacity:1;
+    z-index:2;
+  }
+
+  .page-content{
+    height:100%;
+    overflow-y:auto;
+    padding:4.5rem 1.5rem 5rem;
+    -webkit-overflow-scrolling:touch;
+  }
+  .page-right .page-content{padding:4.5rem 1.5rem 5rem;}
+
+  /* hide desktop nav arrows */
+  .nav-arrow{display:none!important;}
+  #chap-indicator{display:none;}
+  #close-btn{display:none!important;}
   #page-flipper{display:none!important;}
-  /* smaller text */
-  .chapter-title{font-size:1rem;}
-  .body-text{font-size:.7rem;line-height:1.75;}
-  .running-header{font-size:.42rem;}
-  .skill-row-name{width:105px;font-size:.41rem;}
-  .tp-author{font-size:1.5rem;}
-  .chapter-drop-letter{font-size:2rem;}
-  .title-page{padding:1.2rem;}
+
+  /* ── MOBILE TOP BAR ── */
+  #mobile-topbar{
+    position:fixed;top:0;left:0;right:0;z-index:900;
+    height:48px;
+    background:rgba(26,16,10,.92);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(201,149,12,.2);
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 1rem;
+  }
+  #mobile-topbar.visible{display:flex;}
+  .mob-bar-left{
+    font-family:'Cinzel',serif;font-size:.5rem;
+    letter-spacing:.18em;text-transform:uppercase;
+    color:rgba(201,149,12,.7);
+  }
+  .mob-bar-center{
+    font-family:'Pinyon Script',cursive;
+    font-size:1.2rem;color:var(--gold3);
+  }
+  .mob-bar-right{
+    display:flex;gap:.6rem;align-items:center;
+  }
+  .mob-icon-btn{
+    width:32px;height:32px;
+    border:1px solid rgba(201,149,12,.22);
+    background:rgba(20,10,4,.7);
+    color:rgba(201,149,12,.7);
+    font-size:.75rem;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;border-radius:2px;
+  }
+
+  /* ── MOBILE BOTTOM MENU ── */
+  #mobile-menu{
+    position:fixed;bottom:0;left:0;right:0;z-index:900;
+    background:rgba(20,10,4,.96);
+    backdrop-filter:blur(12px);
+    border-top:1px solid rgba(201,149,12,.2);
+    display:none;
+    flex-direction:column;
+  }
+  #mobile-menu.visible{display:flex;}
+
+  /* page indicator strip */
+  #mob-page-strip{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:.45rem 1.2rem;
+    border-bottom:1px solid rgba(201,149,12,.12);
+  }
+  .mob-pg-btn{
+    width:36px;height:36px;
+    border:1px solid rgba(201,149,12,.22);
+    background:transparent;color:var(--gold2);
+    font-size:1rem;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;border-radius:2px;
+    transition:all .2s;
+  }
+  .mob-pg-btn:active{background:rgba(201,149,12,.15);}
+  .mob-pg-btn.dim{opacity:.25;pointer-events:none;}
+  #mob-page-info{
+    font-family:'Cinzel',serif;font-size:.48rem;
+    letter-spacing:.15em;color:rgba(201,149,12,.6);
+    text-align:center;
+  }
+  #mob-page-title{
+    font-family:'IM Fell English',serif;font-style:italic;
+    font-size:.65rem;color:rgba(201,149,12,.5);
+  }
+
+  /* chapter nav tabs */
+  #mob-chapter-tabs{
+    display:flex;overflow-x:auto;
+    scrollbar-width:none;
+    -ms-overflow-style:none;
+  }
+  #mob-chapter-tabs::-webkit-scrollbar{display:none;}
+  .mob-tab{
+    flex-shrink:0;
+    display:flex;flex-direction:column;align-items:center;
+    gap:.2rem;
+    padding:.5rem .9rem .6rem;
+    cursor:pointer;
+    border-right:1px solid rgba(201,149,12,.1);
+    transition:background .2s;
+    min-width:70px;
+  }
+  .mob-tab:last-child{border-right:none;}
+  .mob-tab.active{background:rgba(201,149,12,.1);}
+  .mob-tab-icon{font-size:1rem;opacity:.6;transition:opacity .2s;}
+  .mob-tab.active .mob-tab-icon{opacity:1;}
+  .mob-tab-label{
+    font-family:'Cinzel',serif;font-size:.38rem;
+    letter-spacing:.12em;text-transform:uppercase;
+    color:rgba(201,149,12,.45);transition:color .2s;
+    text-align:center;
+  }
+  .mob-tab.active .mob-tab-label{color:rgba(201,149,12,.8);}
+
+  /* typography adjustments */
+  .chapter-title{font-size:1.1rem;}
+  .body-text{font-size:.75rem;line-height:1.85;}
+  .running-header{font-size:.44rem;}
+  .skill-row-name{width:110px;font-size:.42rem;}
+  .tp-author{font-size:1.7rem;}
+  .chapter-drop-letter{font-size:2.2rem;}
+  .title-page{padding:1.5rem;}
 }
 
-/* ─ PHONE (≤480px) ─ */
 @media(max-width:480px){
-  #closed-book{width:190px;height:265px;}
-  .cb-name{font-size:1.55rem;}
-  .cb-welcome{font-size:.4rem;}
-  .cb-hash{font-size:.33rem;}
-  .page-content{padding:1.2rem 1rem;}
-  .page-right .page-content{padding:1.2rem 1rem;}
-  .chapter-title{font-size:.95rem;}
-  .body-text{font-size:.68rem;}
-  .tp-author{font-size:1.35rem;}
-  .skill-row-name{width:90px;font-size:.38rem;}
-  .dot{width:5px;height:5px;}
+  .page-content{padding:4.2rem 1.2rem 4.8rem;}
+  .page-right .page-content{padding:4.2rem 1.2rem 4.8rem;}
+  .chapter-title{font-size:1rem;}
+  .body-text{font-size:.72rem;}
+  .tp-author{font-size:1.5rem;}
 }
 </style>
 </head>
@@ -626,12 +729,40 @@ body::after{
   </div>
 
 </div>
+  <!-- ══ MOBILE TOP BAR ══ -->
+  <div id="mobile-topbar">
+    <div class="mob-bar-left" id="mob-chapter-label">Front Matter</div>
+    <div class="mob-bar-center">Dr. IR</div>
+    <div class="mob-bar-right">
+      <div class="mob-icon-btn" id="mob-close-btn">✕</div>
+    </div>
+  </div>
+
+  <!-- ══ MOBILE BOTTOM MENU ══ -->
+  <div id="mobile-menu">
+    <div id="mob-page-strip">
+      <button class="mob-pg-btn" id="mob-prev">←</button>
+      <div style="text-align:center">
+        <div id="mob-page-info">PAGE 1 OF 14</div>
+        <div id="mob-page-title">Title Page</div>
+      </div>
+      <button class="mob-pg-btn" id="mob-next">→</button>
+    </div>
+    <div id="mob-chapter-tabs">
+      <div class="mob-tab active" data-chapter="0"><span class="mob-tab-icon">📖</span><span class="mob-tab-label">Front</span></div>
+      <div class="mob-tab" data-chapter="1"><span class="mob-tab-icon">🎓</span><span class="mob-tab-label">Scholar</span></div>
+      <div class="mob-tab" data-chapter="2"><span class="mob-tab-icon">🔬</span><span class="mob-tab-label">Research</span></div>
+      <div class="mob-tab" data-chapter="3"><span class="mob-tab-icon">🛸</span><span class="mob-tab-label">Projects</span></div>
+      <div class="mob-tab" data-chapter="4"><span class="mob-tab-icon">📄</span><span class="mob-tab-label">Papers</span></div>
+      <div class="mob-tab" data-chapter="5"><span class="mob-tab-icon">✉️</span><span class="mob-tab-label">Contact</span></div>
+    </div>
+  </div>
+
 
 <script>
-// ══════════════════════════════════════════
-// SPREADS DATA — each spread = {left, right}
-// chapters = array of chapter objects with spreads[]
-// ══════════════════════════════════════════
+/* ══════════════════════════════════════════
+   CHAPTERS DATA
+══════════════════════════════════════════ */
 const CHAPTERS = [
   {
     title: "Front Matter",
@@ -665,7 +796,7 @@ const CHAPTERS = [
           <div class="toc-entry" data-chapter="4"><span class="te-num">IV</span><span class="te-title">Works Published</span><span class="te-dots"></span><span class="te-page">9</span></div>
           <div class="toc-entry" data-chapter="5"><span class="te-num">V</span><span class="te-title">Correspondence</span><span class="te-dots"></span><span class="te-page">11</span></div>
           <div class="ornament-div" style="margin:.8rem 0">✦ ─── ✦</div>
-          <p style="font-family:'IM Fell English',serif;font-style:italic;font-size:.66rem;color:var(--ink3);line-height:1.7">Use arrows ← → to turn pages, or click a chapter above to jump.</p>
+          <p style="font-family:'IM Fell English',serif;font-style:italic;font-size:.66rem;color:var(--ink3);line-height:1.7">Use arrows ← → to turn pages, or tap a chapter below to jump.</p>
           <div class="page-number">ii</div>
         `
       }
@@ -713,18 +844,9 @@ const CHAPTERS = [
           <div class="ornament-div" style="margin:.65rem 0">· · ·</div>
           <div class="sc-label">Positions Held</div>
           <div class="section-divider"></div>
-          <div class="exp-item">
-            <div class="exp-role">Assistant Professor, CSE</div>
-            <div class="exp-period">2022 – Present</div>
-          </div>
-          <div class="exp-item">
-            <div class="exp-role">Founder &amp; CEO, Akash Labs</div>
-            <div class="exp-period">2020 – Present</div>
-          </div>
-          <div class="exp-item">
-            <div class="exp-role">PhD — AI &amp; Robotics</div>
-            <div class="exp-period">2018 – 2022</div>
-          </div>
+          <div class="exp-item"><div class="exp-role">Assistant Professor, CSE</div><div class="exp-period">2022 – Present</div></div>
+          <div class="exp-item"><div class="exp-role">Founder &amp; CEO, Akash Labs</div><div class="exp-period">2020 – Present</div></div>
+          <div class="exp-item"><div class="exp-role">PhD — AI &amp; Robotics</div><div class="exp-period">2018 – 2022</div></div>
           <div class="page-number">4</div>
         `
       },
@@ -736,15 +858,15 @@ const CHAPTERS = [
           <div class="section-divider" style="margin-bottom:.8rem"></div>
           <div class="exp-item">
             <div class="exp-role">Assistant Professor, CSE</div>
-            <div class="exp-org">Department of Computer Science &amp; Engineering</div>
+            <div class="exp-org">Dept. of Computer Science &amp; Engineering</div>
             <div class="exp-period">2022 – Present</div>
-            <div class="exp-desc">Teaching core CSE courses while running an active research lab in aerial intelligence. Mentoring B.Tech and M.Tech students on AI/UAV thesis projects and guiding industry collaborations.</div>
+            <div class="exp-desc">Teaching core CSE courses while running an active research lab in aerial intelligence. Mentoring B.Tech and M.Tech students on AI/UAV thesis projects.</div>
           </div>
           <div class="exp-item">
             <div class="exp-role">Founder &amp; CEO, Akash Labs</div>
             <div class="exp-org">Akash Labs — Autonomous Aerial Systems</div>
             <div class="exp-period">2020 – Present</div>
-            <div class="exp-desc">Founded Akash Labs to bridge academic research and applied drone technology. Built a team of engineers and researchers developing commercial-grade autonomous UAV solutions for agriculture, surveillance, and logistics.</div>
+            <div class="exp-desc">Founded Akash Labs to bridge academic research and applied drone technology. Built a team developing commercial-grade autonomous UAV solutions.</div>
           </div>
           <div class="page-number">5</div>
         `,
@@ -754,7 +876,7 @@ const CHAPTERS = [
             <div class="exp-role">PhD Research Scholar</div>
             <div class="exp-org">Doctoral Programme — AI &amp; Robotics</div>
             <div class="exp-period">2018 – 2022</div>
-            <div class="exp-desc">Doctoral research on autonomous UAV navigation using deep reinforcement learning. Developed the theoretical foundations and practical implementations that form the core of Akash Labs' technology stack.</div>
+            <div class="exp-desc">Doctoral research on autonomous UAV navigation using deep reinforcement learning. Developed the theoretical foundations that form the core of Akash Labs' technology stack.</div>
           </div>
           <div class="ornament-div" style="margin:.8rem 0">✦ ─── ✦</div>
           <div class="sc-label">Academic Metrics</div>
@@ -792,38 +914,18 @@ const CHAPTERS = [
           <div class="chapter-title">Research<br>&amp; Inquiry</div>
           <div class="chapter-sub">On the questions that drive the work</div>
           <div class="ornament-div">· · ·</div>
-          <div class="r-entry">
-            <div class="r-entry-title">Autonomous UAV Navigation</div>
-            <div class="r-entry-desc">Self-navigating aerial vehicles using reinforcement learning and sensor fusion in GPS-denied, obstacle-rich environments.</div>
-          </div>
-          <div class="r-entry">
-            <div class="r-entry-title">Aerial Computer Vision</div>
-            <div class="r-entry-desc">Real-time object detection and semantic segmentation via custom YOLOv8 variants on edge-constrained drone hardware at 60fps.</div>
-          </div>
-          <div class="r-entry">
-            <div class="r-entry-title">Swarm Intelligence</div>
-            <div class="r-entry-desc">Decentralized coordination protocols for multi-UAV swarms — emergent collective behaviour without central control, inspired by nature.</div>
-          </div>
+          <div class="r-entry"><div class="r-entry-title">Autonomous UAV Navigation</div><div class="r-entry-desc">Self-navigating aerial vehicles using reinforcement learning and sensor fusion in GPS-denied environments.</div></div>
+          <div class="r-entry"><div class="r-entry-title">Aerial Computer Vision</div><div class="r-entry-desc">Real-time object detection via custom YOLOv8 variants on edge-constrained drone hardware at 60fps.</div></div>
+          <div class="r-entry"><div class="r-entry-title">Swarm Intelligence</div><div class="r-entry-desc">Decentralized coordination protocols for multi-UAV swarms — emergent collective behaviour without central control.</div></div>
           <div class="page-number">7</div>
         `,
         right: `
           <div class="running-header">Chapter II · Research &amp; Inquiry</div>
-          <div class="r-entry">
-            <div class="r-entry-title">Edge AI Inference</div>
-            <div class="r-entry-desc">Deploying large neural networks on power-constrained hardware (Jetson, Coral TPU) through quantization, pruning, and architecture search.</div>
-          </div>
-          <div class="r-entry">
-            <div class="r-entry-title">3D Scene Reconstruction</div>
-            <div class="r-entry-desc">Aerial photogrammetry and Neural Radiance Fields (NeRF) for high-fidelity 3D mapping targeting precision agriculture and infrastructure inspection.</div>
-          </div>
-          <div class="r-entry">
-            <div class="r-entry-title">Human–Robot Interaction</div>
-            <div class="r-entry-desc">Gesture-based and voice-commanded interfaces for drone control — reducing the cognitive load of operating autonomous aerial systems in the field.</div>
-          </div>
+          <div class="r-entry"><div class="r-entry-title">Edge AI Inference</div><div class="r-entry-desc">Deploying large neural networks on power-constrained hardware through quantization, pruning, and architecture search.</div></div>
+          <div class="r-entry"><div class="r-entry-title">3D Scene Reconstruction</div><div class="r-entry-desc">Aerial photogrammetry and Neural Radiance Fields (NeRF) for precision agriculture and infrastructure inspection.</div></div>
+          <div class="r-entry"><div class="r-entry-title">Human–Robot Interaction</div><div class="r-entry-desc">Gesture-based and voice-commanded interfaces for drone control — reducing cognitive load in field operations.</div></div>
           <div class="ornament-div" style="margin:.8rem 0">✦ ─── ✦</div>
-          <div class="blockquote">
-            The six pillars form one unified pursuit: machines that fully understand their world.
-          </div>
+          <div class="blockquote">The six pillars form one unified pursuit: machines that fully understand their world.</div>
           <div class="page-number">8</div>
         `
       }
@@ -839,32 +941,15 @@ const CHAPTERS = [
           <div class="chapter-title">Labours<br>&amp; Projects</div>
           <div class="chapter-sub">On the works of Akash Labs</div>
           <div class="ornament-div">· · ·</div>
-          <div class="proj-item">
-            <div class="pi-name">AkashEye — Aerial Detection</div>
-            <div class="pi-desc">Custom YOLOv8 pipeline achieving 60fps on NVIDIA Jetson Orin. Deployed on surveillance and precision agriculture drones across multiple regions.</div>
-          </div>
-          <div class="proj-item">
-            <div class="pi-name">SwarmOS — Multi-UAV Framework</div>
-            <div class="pi-desc">Decentralized OS-level coordination for fleets of 5–50 drones using bio-inspired algorithms. Tested in real search-and-rescue scenarios with proven results.</div>
-          </div>
+          <div class="proj-item"><div class="pi-name">AkashEye — Aerial Detection</div><div class="pi-desc">Custom YOLOv8 pipeline achieving 60fps on NVIDIA Jetson Orin. Deployed on surveillance and precision agriculture drones.</div></div>
+          <div class="proj-item"><div class="pi-name">SwarmOS — Multi-UAV Framework</div><div class="pi-desc">Decentralized OS-level coordination for fleets of 5–50 drones using bio-inspired algorithms. Tested in real search-and-rescue scenarios.</div></div>
           <div class="page-number">9</div>
         `,
         right: `
           <div class="running-header">Chapter III · Labours &amp; Projects</div>
-          <div class="proj-item">
-            <div class="pi-name">DroneSLAM — GPS-Denied Navigation</div>
-            <div class="pi-desc">Simultaneous Localization and Mapping fusing monocular camera, IMU, and barometer for reliable indoor and outdoor autonomous flight without satellite signals.</div>
-          </div>
-          <div class="proj-item">
-            <div class="pi-name">NeRF-Drone — Neural Reconstruction</div>
-            <div class="pi-desc">Automated NeRF pipeline for aerial photogrammetry. Ten minutes of drone footage yields a photorealistic 3D model of any site for precision agriculture or inspection.</div>
-          </div>
-          <div class="proj-item">
-            <div class="pi-name">GestureCommand — HRI Interface</div>
-            <div class="pi-desc">MediaPipe and transformer-based gesture recognition enabling hands-free drone piloting in unstructured field environments without physical controllers.</div>
-          </div>
-          <div class="ornament-div" style="margin:.7rem 0">· · ·</div>
-          <p style="font-family:'IM Fell English',serif;font-style:italic;font-size:.68rem;color:var(--ink3);line-height:1.7">All projects follow open research principles — code and datasets shared with the community.</p>
+          <div class="proj-item"><div class="pi-name">DroneSLAM — GPS-Denied Navigation</div><div class="pi-desc">Simultaneous Localization and Mapping fusing monocular camera, IMU, and barometer for reliable autonomous flight.</div></div>
+          <div class="proj-item"><div class="pi-name">NeRF-Drone — Neural Reconstruction</div><div class="pi-desc">Automated NeRF pipeline: 10 minutes of drone footage yields a photorealistic 3D model for agriculture or inspection.</div></div>
+          <div class="proj-item"><div class="pi-name">GestureCommand — HRI Interface</div><div class="pi-desc">MediaPipe and transformer-based gesture recognition enabling hands-free drone piloting without physical controllers.</div></div>
           <div class="page-number">10</div>
         `
       }
@@ -880,36 +965,18 @@ const CHAPTERS = [
           <div class="chapter-title">Works<br>Published</div>
           <div class="chapter-sub">Selected publications &amp; papers</div>
           <div class="ornament-div">· · ·</div>
-          <div class="pub-entry">
-            <div class="pub-title-txt">Edge-Deployed YOLOv8 for Real-Time Object Detection in GPS-Denied UAV Environments</div>
-            <div class="pub-venue-txt">IEEE Transactions on Aerospace &amp; Electronic Systems <span class="pub-badge">2024</span></div>
-          </div>
-          <div class="pub-entry">
-            <div class="pub-title-txt">Decentralized Swarm Intelligence for Multi-UAV Search and Rescue Operations</div>
-            <div class="pub-venue-txt">ICRA — Int. Conference on Robotics &amp; Automation <span class="pub-badge">2024</span></div>
-          </div>
-          <div class="pub-entry">
-            <div class="pub-title-txt">Neural Radiance Fields for Aerial 3D Reconstruction: A Precision Agriculture Study</div>
-            <div class="pub-venue-txt">Remote Sensing, MDPI (Q1 Journal) <span class="pub-badge">2023</span></div>
-          </div>
+          <div class="pub-entry"><div class="pub-title-txt">Edge-Deployed YOLOv8 for Real-Time Object Detection in GPS-Denied UAV Environments</div><div class="pub-venue-txt">IEEE Trans. Aerospace &amp; Electronic Systems <span class="pub-badge">2024</span></div></div>
+          <div class="pub-entry"><div class="pub-title-txt">Decentralized Swarm Intelligence for Multi-UAV Search and Rescue Operations</div><div class="pub-venue-txt">ICRA — Int. Conference on Robotics &amp; Automation <span class="pub-badge">2024</span></div></div>
+          <div class="pub-entry"><div class="pub-title-txt">Neural Radiance Fields for Aerial 3D Reconstruction: A Precision Agriculture Study</div><div class="pub-venue-txt">Remote Sensing, MDPI (Q1) <span class="pub-badge">2023</span></div></div>
           <div class="page-number">11</div>
         `,
         right: `
           <div class="running-header">Chapter IV · Works Published</div>
-          <div class="pub-entry">
-            <div class="pub-title-txt">Gesture-Based Human–UAV Interface Using MediaPipe and Transformer Networks</div>
-            <div class="pub-venue-txt">ACM CHI — Human Factors in Computing Systems <span class="pub-badge">2023</span></div>
-          </div>
-          <div class="pub-entry">
-            <div class="pub-title-txt">Quantization-Aware Training for On-Device Deep Learning on Embedded Aerial Platforms</div>
-            <div class="pub-venue-txt">IEEE Embedded Systems Letters <span class="pub-badge">2022</span></div>
-          </div>
-          <div class="pub-entry">
-            <div class="pub-title-txt">Reinforcement Learning for Obstacle Avoidance in Micro-UAV Swarms</div>
-            <div class="pub-venue-txt">Autonomous Robots, Springer <span class="pub-badge">2022</span></div>
-          </div>
+          <div class="pub-entry"><div class="pub-title-txt">Gesture-Based Human–UAV Interface Using MediaPipe and Transformer Networks</div><div class="pub-venue-txt">ACM CHI — Human Factors in Computing Systems <span class="pub-badge">2023</span></div></div>
+          <div class="pub-entry"><div class="pub-title-txt">Quantization-Aware Training for On-Device Deep Learning on Embedded Aerial Platforms</div><div class="pub-venue-txt">IEEE Embedded Systems Letters <span class="pub-badge">2022</span></div></div>
+          <div class="pub-entry"><div class="pub-title-txt">Reinforcement Learning for Obstacle Avoidance in Micro-UAV Swarms</div><div class="pub-venue-txt">Autonomous Robots, Springer <span class="pub-badge">2022</span></div></div>
           <div class="ornament-div" style="margin:.7rem 0">✦ ─── ✦</div>
-          <p style="font-family:'IM Fell English',serif;font-style:italic;font-size:.67rem;color:var(--ink3);line-height:1.7">For a full list including preprints and conference abstracts, consult Google Scholar — Imandi Raju.</p>
+          <p style="font-family:'IM Fell English',serif;font-style:italic;font-size:.67rem;color:var(--ink3);line-height:1.7">Full list on Google Scholar — Imandi Raju.</p>
           <div class="page-number">12</div>
         `
       }
@@ -925,11 +992,7 @@ const CHAPTERS = [
           <div class="chapter-title">Correspondence</div>
           <div class="chapter-sub">On reaching the author of this folio</div>
           <div class="ornament-div">· · ·</div>
-          <p class="body-text">
-            <span class="chapter-drop-letter">C</span>ollaboration, curiosity, and conversation are welcome.
-            Whether you seek a research partner, a speaker on autonomous systems,
-            or a supervisor for postgraduate study — this door is always open.
-          </p>
+          <p class="body-text"><span class="chapter-drop-letter">C</span>ollaboration, curiosity, and conversation are welcome. Whether you seek a research partner, a speaker, or a supervisor for postgraduate study — this door is always open.</p>
           <div class="section-divider"></div>
           <div class="contact-item"><span class="ci-icon">Email</span><span>imandiraju@university.ac.in</span></div>
           <div class="contact-item"><span class="ci-icon">Scholar</span><span>Google Scholar — Imandi Raju</span></div>
@@ -944,7 +1007,7 @@ const CHAPTERS = [
           <div class="section-divider" style="margin-bottom:.6rem"></div>
           <div class="cf-field"><label class="cf-label">Your Name</label><input type="text" class="cf-input" placeholder="e.g. Dr. Smith"></div>
           <div class="cf-field"><label class="cf-label">Your Email</label><input type="email" class="cf-input" placeholder="your@email.com"></div>
-          <div class="cf-field"><label class="cf-label">Subject</label><input type="text" class="cf-input" placeholder="Research collaboration / PhD enquiry..."></div>
+          <div class="cf-field"><label class="cf-label">Subject</label><input type="text" class="cf-input" placeholder="Research collaboration..."></div>
           <div class="cf-field"><label class="cf-label">Message</label><textarea class="cf-textarea" placeholder="I write to enquire about..."></textarea></div>
           <button class="cf-btn" onclick="this.textContent='✦ Letter Dispatched';this.disabled=true;this.style.background='#2a6e3a'">✦ Dispatch Letter</button>
           <div class="ornament-div" style="margin-top:auto">✦ Finis ✦</div>
@@ -955,163 +1018,273 @@ const CHAPTERS = [
   }
 ];
 
-// ── Build flat spread list ──
-// spreads = [{chapterIdx, spreadIdx, left, right}, ...]
+/* ══════════════════════════════════════════
+   BUILD FLAT STRUCTURES
+══════════════════════════════════════════ */
 const SPREADS = [];
-const CHAPTER_START = []; // which spread index each chapter starts on
+const CHAPTER_START = [];
 CHAPTERS.forEach((ch, ci) => {
   CHAPTER_START.push(SPREADS.length);
-  ch.spreads.forEach((sp, si) => {
-    SPREADS.push({chapterIdx: ci, spreadIdx: si, totalSpreads: ch.spreads.length, left: sp.left, right: sp.right});
+  ch.spreads.forEach(sp => {
+    SPREADS.push({ chapterIdx: ci, left: sp.left, right: sp.right });
   });
 });
 
-let currentSpread = 0;
-let isAnimating = false;
-
-const closedBook  = document.getElementById('closed-book');
-const openBook    = document.getElementById('open-book');
-const openBtn     = document.getElementById('open-btn');
-const closeBtn    = document.getElementById('close-btn');
-const contentL    = document.getElementById('content-l');
-const contentR    = document.getElementById('content-r');
-const btnPrev     = document.getElementById('btn-prev');
-const btnNext     = document.getElementById('btn-next');
-const flipper     = document.getElementById('page-flipper');
-const chapInd     = document.getElementById('chap-indicator');
-const ribbon      = document.getElementById('ribbon-inner');
-
-// Build chapter dots (one per chapter)
-CHAPTERS.forEach((ch, i) => {
-  const dot = document.createElement('div');
-  dot.className = 'chap-dot' + (i===0?' active':'');
-  dot.title = ch.title;
-  dot.addEventListener('click', () => goToChapter(i));
-  chapInd.appendChild(dot);
+const ALL_PAGES = [];
+const CHAPTER_PAGE_START = [];
+CHAPTERS.forEach((ch, ci) => {
+  CHAPTER_PAGE_START.push(ALL_PAGES.length);
+  ch.spreads.forEach((sp, si) => {
+    ALL_PAGES.push({ chapterIdx: ci, chapterTitle: ch.title, side: 'left',  content: sp.left,  label: si===0 ? ch.title : ch.title+' (cont.)' });
+    ALL_PAGES.push({ chapterIdx: ci, chapterTitle: ch.title, side: 'right', content: sp.right, label: si===0 ? ch.title : ch.title+' (cont.)' });
+  });
 });
 
+/* ══════════════════════════════════════════
+   DOM REFS — all grabbed once safely
+══════════════════════════════════════════ */
+const $ = id => document.getElementById(id);
+
+const elClosed    = $('closed-book');
+const elOpen      = $('open-book');
+const elOpenBtn   = $('open-btn');
+const elCloseBtn  = $('close-btn');
+const elContentL  = $('content-l');
+const elContentR  = $('content-r');
+const elBtnPrev   = $('btn-prev');
+const elBtnNext   = $('btn-next');
+const elFlipper   = $('page-flipper');
+const elChapInd   = $('chap-indicator');
+const elRibbon    = $('ribbon-inner');
+const elFlipFront = $('flip-front-content');
+const elFlipBack  = $('flip-back-content');
+
+// Mobile elements
+const elMobTopbar  = $('mobile-topbar');
+const elMobMenu    = $('mobile-menu');
+const elMobPrev    = $('mob-prev');
+const elMobNext    = $('mob-next');
+const elMobInfo    = $('mob-page-info');
+const elMobTitle   = $('mob-page-title');
+const elMobChapLbl = $('mob-chapter-label');
+const elMobClose   = $('mob-close-btn');
+const elMobTabs    = document.querySelectorAll('.mob-tab');
+
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+let currentSpread  = 0;
+let isAnimating    = false;
+let mobilePage     = 0;
+let mobileAnim     = false;
+const IS_MOBILE    = () => window.innerWidth <= 768;
+
+/* ══════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════ */
 function buildDots(container) {
   container.querySelectorAll('.skill-row-dots').forEach(el => {
     const fill = +el.dataset.fill, total = +el.dataset.total;
     el.innerHTML = '';
-    for (let i=0;i<total;i++) {
+    for (let i = 0; i < total; i++) {
       const d = document.createElement('div');
-      d.className = 'dot' + (i<fill?' filled':'');
+      d.className = 'dot' + (i < fill ? ' filled' : '');
       el.appendChild(d);
     }
   });
   container.querySelectorAll('.toc-entry[data-chapter]').forEach(el => {
-    el.addEventListener('click', () => goToChapter(+el.dataset.chapter));
+    el.addEventListener('click', () => {
+      if (IS_MOBILE()) mobileGoToChapter(+el.dataset.chapter);
+      else             desktopGoToChapter(+el.dataset.chapter);
+    });
   });
 }
 
-function renderSpread(idx) {
-  const sp = SPREADS[idx];
-  contentL.innerHTML = sp.left;
-  contentR.innerHTML = sp.right;
-  buildDots(contentL); buildDots(contentR);
+/* ══════════════════════════════════════════
+   BUILD CHAPTER DOTS (desktop)
+══════════════════════════════════════════ */
+CHAPTERS.forEach((ch, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'chap-dot' + (i === 0 ? ' active' : '');
+  dot.title = ch.title;
+  dot.addEventListener('click', () => desktopGoToChapter(i));
+  elChapInd.appendChild(dot);
+});
 
-  // update chapter dots
-  const activeChap = sp.chapterIdx;
-  document.querySelectorAll('.chap-dot').forEach((d,i) => d.classList.toggle('active', i===activeChap));
-
-  // ribbon
-  const pct = idx / (SPREADS.length - 1);
-  ribbon.style.minHeight = (28 + pct*170) + 'px';
-
-  // nav buttons
-  btnPrev.classList.toggle('disabled', idx === 0);
-  btnNext.classList.toggle('disabled', idx === SPREADS.length - 1);
-}
-
-// ── OPEN / CLOSE ──
-function openBook_fn() {
-  closedBook.classList.add('hidden');
-  openBtn.classList.add('hidden');
+/* ══════════════════════════════════════════
+   OPEN / CLOSE BOOK
+══════════════════════════════════════════ */
+function openBook() {
+  elClosed.classList.add('hidden');
+  elOpenBtn.classList.add('hidden');
   setTimeout(() => {
-    openBook.classList.add('visible');
-    closeBtn.classList.add('visible');
-    currentSpread = 0;
-    renderSpread(0);
+    elOpen.classList.add('visible');
+    if (IS_MOBILE()) {
+      elMobTopbar.classList.add('visible');
+      elMobMenu.classList.add('visible');
+      mobileRender(0, 0);
+    } else {
+      elCloseBtn.classList.add('visible');
+      desktopRender(0);
+    }
   }, 350);
 }
-closedBook.addEventListener('click', openBook_fn);
-openBtn.addEventListener('click', e => { e.stopPropagation(); openBook_fn(); });
-closeBtn.addEventListener('click', () => {
-  openBook.classList.remove('visible');
-  closeBtn.classList.remove('visible');
-  setTimeout(() => {
-    closedBook.classList.remove('hidden');
-    openBtn.classList.remove('hidden');
-    currentSpread = 0;
-  }, 550);
-});
 
-// ── NAVIGATE ──
-function goToChapter(chapIdx) {
-  const targetSpread = CHAPTER_START[chapIdx];
-  if (targetSpread === currentSpread) return;
-  doFlip(targetSpread > currentSpread, targetSpread);
+function closeBook() {
+  elOpen.classList.remove('visible');
+  elCloseBtn.classList.remove('visible');
+  elMobTopbar.classList.remove('visible');
+  elMobMenu.classList.remove('visible');
+  setTimeout(() => {
+    elClosed.classList.remove('hidden');
+    elOpenBtn.classList.remove('hidden');
+    currentSpread = 0;
+    mobilePage = 0;
+  }, 500);
 }
 
-function goToSpread(target) {
+elClosed.addEventListener('click', openBook);
+elOpenBtn.addEventListener('click', e => { e.stopPropagation(); openBook(); });
+elCloseBtn.addEventListener('click', closeBook);
+elMobClose.addEventListener('click', closeBook);
+
+/* ══════════════════════════════════════════
+   DESKTOP ENGINE
+══════════════════════════════════════════ */
+function desktopRender(idx) {
+  const sp = SPREADS[idx];
+  elContentL.innerHTML = sp.left;
+  elContentR.innerHTML = sp.right;
+  buildDots(elContentL);
+  buildDots(elContentR);
+  document.querySelectorAll('.chap-dot').forEach((d, i) => d.classList.toggle('active', i === sp.chapterIdx));
+  elRibbon.style.minHeight = (28 + (idx / (SPREADS.length - 1)) * 170) + 'px';
+  elBtnPrev.classList.toggle('disabled', idx === 0);
+  elBtnNext.classList.toggle('disabled', idx === SPREADS.length - 1);
+}
+
+function desktopGoToChapter(ci) {
+  desktopGoTo(CHAPTER_START[ci]);
+}
+
+function desktopGoTo(target) {
   if (isAnimating || target === currentSpread) return;
   if (target < 0 || target >= SPREADS.length) return;
-  doFlip(target > currentSpread, target);
-}
-
-btnNext.addEventListener('click', () => goToSpread(currentSpread + 1));
-btnPrev.addEventListener('click', () => goToSpread(currentSpread - 1));
-document.addEventListener('keydown', e => {
-  if (!openBook.classList.contains('visible')) return;
-  if (e.key==='ArrowRight') goToSpread(currentSpread+1);
-  if (e.key==='ArrowLeft')  goToSpread(currentSpread-1);
-});
-
-// ── FLIP ANIMATION ──
-function doFlip(forward, target) {
+  const fwd = target > currentSpread;
   isAnimating = true;
-  const from = SPREADS[currentSpread];
-  const to   = SPREADS[target];
-  const ff   = document.getElementById('flip-front-content');
-  const fb   = document.getElementById('flip-back-content');
-
-  ff.innerHTML = forward ? `<div class="page-content">${from.right}</div>` : `<div class="page-content">${from.left}</div>`;
-  fb.innerHTML = forward ? `<div class="page-content">${to.left}</div>`   : `<div class="page-content">${to.right}</div>`;
-
-  buildDots(ff); buildDots(fb);
-
-  flipper.style.left = forward ? '50%' : '0';
-  flipper.style.transformOrigin = forward ? 'left center' : 'right center';
-  flipper.style.display = 'block';
-  flipper.classList.remove('flipping-forward','flipping-backward');
-  void flipper.offsetWidth;
-  flipper.classList.add(forward ? 'flipping-forward' : 'flipping-backward');
-
+  const from = SPREADS[currentSpread], to = SPREADS[target];
+  elFlipFront.innerHTML = `<div class="page-content">${fwd ? from.right : from.left}</div>`;
+  elFlipBack.innerHTML  = `<div class="page-content">${fwd ? to.left   : to.right}</div>`;
+  buildDots(elFlipFront); buildDots(elFlipBack);
+  elFlipper.style.left = fwd ? '50%' : '0';
+  elFlipper.style.transformOrigin = fwd ? 'left center' : 'right center';
+  elFlipper.style.display = 'block';
+  elFlipper.classList.remove('flipping-forward', 'flipping-backward');
+  void elFlipper.offsetWidth;
+  elFlipper.classList.add(fwd ? 'flipping-forward' : 'flipping-backward');
   setTimeout(() => {
     currentSpread = target;
-    renderSpread(currentSpread);
-    flipper.style.display = 'none';
-    flipper.classList.remove('flipping-forward','flipping-backward');
+    desktopRender(currentSpread);
+    elFlipper.style.display = 'none';
+    elFlipper.classList.remove('flipping-forward', 'flipping-backward');
+    elFlipper.style.left = '50%';
     isAnimating = false;
-    flipper.style.left = '50%';
   }, 680);
 }
 
-// ── TOUCH SWIPE SUPPORT ──
-(function(){
-  let startX = 0;
-  const el = document.getElementById('open-book');
-  el.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, {passive:true});
-  el.addEventListener('touchend', e => {
-    const dx = e.changedTouches[0].clientX - startX;
-    if (Math.abs(dx) > 50) {
-      if (dx < 0) goToSpread(currentSpread + 1);
-      else        goToSpread(currentSpread - 1);
-    }
-  }, {passive:true});
-})();
+elBtnNext.addEventListener('click', () => desktopGoTo(currentSpread + 1));
+elBtnPrev.addEventListener('click', () => desktopGoTo(currentSpread - 1));
+document.addEventListener('keydown', e => {
+  if (!elOpen.classList.contains('visible') || IS_MOBILE()) return;
+  if (e.key === 'ArrowRight') desktopGoTo(currentSpread + 1);
+  if (e.key === 'ArrowLeft')  desktopGoTo(currentSpread - 1);
+});
 
+/* ══════════════════════════════════════════
+   MOBILE ENGINE
+══════════════════════════════════════════ */
+function mobileRender(idx, dir) {
+  mobilePage = idx;
+  const pg = ALL_PAGES[idx];
+  const showRight = pg.side === 'right';
+
+  if (showRight) {
+    elContentR.innerHTML = pg.content;
+    buildDots(elContentR);
+  } else {
+    elContentL.innerHTML = pg.content;
+    buildDots(elContentL);
+  }
+
+  if (dir !== 0) {
+    mobileAnim = true;
+    elOpen.classList.remove('show-right');
+    requestAnimationFrame(() => {
+      if (showRight) elOpen.classList.add('show-right');
+      setTimeout(() => { mobileAnim = false; }, 460);
+    });
+  } else {
+    if (showRight) elOpen.classList.add('show-right');
+    else elOpen.classList.remove('show-right');
+  }
+
+  elMobInfo.textContent  = `PAGE ${idx + 1} OF ${ALL_PAGES.length}`;
+  elMobTitle.textContent = pg.label;
+  elMobChapLbl.textContent = pg.chapterTitle;
+  elMobTabs.forEach(t => t.classList.toggle('active', +t.dataset.chapter === pg.chapterIdx));
+  const activeTab = document.querySelector('.mob-tab.active');
+  if (activeTab) activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  elMobPrev.classList.toggle('dim', idx === 0);
+  elMobNext.classList.toggle('dim', idx === ALL_PAGES.length - 1);
+}
+
+function mobileGoToChapter(ci) {
+  const tp = CHAPTER_PAGE_START[ci];
+  mobileRender(tp, tp > mobilePage ? 1 : -1);
+}
+
+elMobPrev.addEventListener('click', () => { if (!mobileAnim && mobilePage > 0) mobileRender(mobilePage - 1, -1); });
+elMobNext.addEventListener('click', () => { if (!mobileAnim && mobilePage < ALL_PAGES.length - 1) mobileRender(mobilePage + 1, 1); });
+elMobTabs.forEach(t => t.addEventListener('click', () => mobileGoToChapter(+t.dataset.chapter)));
+
+// Touch swipe (shared, works for both)
+let touchStartX = 0;
+elOpen.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+elOpen.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) < 45) return;
+  if (IS_MOBILE()) {
+    if (dx < 0) { if (!mobileAnim && mobilePage < ALL_PAGES.length - 1) mobileRender(mobilePage + 1, 1); }
+    else        { if (!mobileAnim && mobilePage > 0) mobileRender(mobilePage - 1, -1); }
+  } else {
+    if (dx < 0) desktopGoTo(currentSpread + 1);
+    else        desktopGoTo(currentSpread - 1);
+  }
+}, { passive: true });
+
+document.addEventListener('keydown', e => {
+  if (!elOpen.classList.contains('visible') || !IS_MOBILE()) return;
+  if (e.key === 'ArrowRight' && !mobileAnim) mobileRender(Math.min(mobilePage + 1, ALL_PAGES.length - 1), 1);
+  if (e.key === 'ArrowLeft'  && !mobileAnim) mobileRender(Math.max(mobilePage - 1, 0), -1);
+});
+
+/* ══════════════════════════════════════════
+   RESIZE HANDLER
+══════════════════════════════════════════ */
+window.addEventListener('resize', () => {
+  if (!elOpen.classList.contains('visible')) return;
+  if (IS_MOBILE()) {
+    elCloseBtn.classList.remove('visible');
+    elMobTopbar.classList.add('visible');
+    elMobMenu.classList.add('visible');
+    mobileRender(mobilePage, 0);
+  } else {
+    elMobTopbar.classList.remove('visible');
+    elMobMenu.classList.remove('visible');
+    elCloseBtn.classList.add('visible');
+    desktopRender(currentSpread);
+  }
+});
 </script>
 </body>
 </html>
