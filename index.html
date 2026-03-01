@@ -15,12 +15,14 @@
   --crimson:#7a1a1a; --crimson2:#a02020; --desk:#0f0b08;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-html{font-size:16px}
+html{height:100%;}
+html{font-size:16px;width:100%;overflow-x:hidden;}
 body{
   background:var(--desk);
   background-image:radial-gradient(ellipse 120% 60% at 50% 100%,#2a1a0e 0%,transparent 70%);
   min-height:100vh;display:flex;align-items:center;justify-content:center;
   overflow:hidden;font-family:'Libre Baskerville',Georgia,serif;
+  width:100%; box-sizing:border-box;
 }
 body::before{
   content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
@@ -262,8 +264,44 @@ body::after{
   0%{transform:translateY(0) scale(1);opacity:.8;}
   100%{transform:translateY(-120px) scale(0);opacity:0;}
 }
+@media(max-width:768px){
+  .holo-ring-1{width:180px;height:180px;}
+  .holo-ring-2{width:140px;height:140px;}
+  .holo-ring-3{width:220px;height:220px;}
+  .holo-text{font-size:3.5rem;}
+  .holo-close{top:1rem;right:1rem;font-size:.44rem;padding:.4rem .8rem;}
+  .holo-inner{padding:0 1rem;}
+}
 
-/* ══ MOBILE BOOK ENHANCEMENTS ══ */
+/* ══ CLICKABLE STATS ══ */
+.la-stat-clickable {
+  cursor: pointer;
+  transition: all .25s;
+  position: relative;
+}
+.la-stat-clickable:hover {
+  background: rgba(201,149,12,.1) !important;
+  border-color: rgba(201,149,12,.4) !important;
+  box-shadow: 0 0 14px rgba(201,149,12,.15);
+  transform: translateY(-2px);
+}
+.la-stat-clickable:active {
+  transform: translateY(0);
+}
+.la-stat-hint {
+  font-family: 'Cinzel', serif;
+  font-size: .32rem;
+  letter-spacing: .1em;
+  color: rgba(201,149,12,.4);
+  margin-top: .15rem;
+  text-transform: uppercase;
+  transition: color .25s;
+}
+.la-stat-clickable:hover .la-stat-hint {
+  color: rgba(201,149,12,.75);
+}
+
+/* ══ MOBILE CENTERING FIX — JS-assisted ══ */
 @media(max-width:768px){
   /* Page spine shadow */
   .page-left::before{
@@ -437,89 +475,77 @@ body::after{
 }
 
 @media(max-width:900px){
-  /* Allow the page to scroll on mobile landing */
+  /* ── MOBILE CENTERING: grid-based, immune to height:auto overrides ── */
   body{
-    overflow-y:auto;
-    overflow-x:hidden;
-    align-items:flex-start;
-    min-height:100dvh;
+    display:block !important;
+    overflow-y:auto !important; overflow-x:hidden !important;
+    width:100%; padding:0; margin:0;
   }
-  body.book-open{
-    overflow:hidden;
-  }
-
-  #landing-about{
-    display:block!important;
-    width:min(92vw,400px);
-    padding:1.4rem 1.4rem 1.2rem;
-    opacity:1!important;transform:none!important;
-  }
-  /* stack vertically, center only about card */
+  body.book-open{ overflow:hidden !important; }
+  /* Grid on scene: always fills the viewport and centers the card */
   #scene{
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    gap:1.5vh;
-    height:auto;
-    min-height:100dvh;
-    padding:1.5rem 0 2rem;
-    overflow:visible;
+    display:grid !important;
+    place-items:center !important;
+    min-height:100vh !important;
+    min-height:100svh !important;
+    width:100% !important;
+    padding:1rem 0 !important;
+    box-sizing:border-box !important;
+    position:relative !important;
+    z-index:1 !important;
   }
-
-  /* Hide the 3D book on mobile landing — show via button tap instead */
-  #book-slot{
-    display:none;
-    flex-shrink:0;
-    opacity:0;
-    transform:translateY(24px) scale(0.92);
-    transition:opacity .65s cubic-bezier(.2,0,.1,1), transform .65s cubic-bezier(.2,0,.1,1);
+  #landing-about{
+    display:flex !important; flex-direction:column !important;
+    align-items:center !important; text-align:center !important;
+    width:min(86vw, 340px) !important;
+    margin:auto !important;
+    padding:.7rem 1rem .8rem !important;
+    box-sizing:border-box !important;
+    opacity:1 !important; transform:none !important;
+    pointer-events:auto !important; position:static !important;
   }
-  #book-slot.mob-revealed{
-    display:flex;
-    opacity:1;
-    transform:translateY(0) scale(1);
-  }
-
-  /* Mobile "Preview the Book" button — inside landing-about card */
+  .la-eyebrow{ justify-content:center !important; width:100% !important; font-size:.28rem !important; margin-bottom:.3rem !important; }
+  .la-name{ font-size:1.5rem !important; line-height:1.1 !important; margin-bottom:.1rem !important; text-align:center !important; width:100% !important; }
+  .la-role{ font-size:.48rem !important; text-align:center !important; width:100% !important; margin-bottom:0 !important; }
+  .la-divider{ margin:.35rem auto !important; }
+  .la-bio{ display:none !important; }
+  .la-stats-grid{ gap:.22rem !important; margin-bottom:.3rem !important; width:100% !important; }
+  .la-stat{ padding:.32rem .2rem !important; text-align:center !important; }
+  .la-stat-num{ font-size:.9rem !important; }
+  .la-stat-label{ font-size:.3rem !important; text-align:center !important; }
+  .la-stat-hint{ font-size:.28rem !important; }
+  .la-item{ margin-bottom:.22rem !important; display:flex !important; flex-direction:column !important; align-items:center !important; width:100% !important; }
+  .la-label{ font-size:.32rem !important; text-align:center !important; width:100% !important; display:block !important; }
+  .la-value{ font-size:.56rem !important; text-align:center !important; width:100% !important; display:block !important; }
+  .la-bar{ width:55% !important; margin:.12rem auto 0 !important; }
+  .la-quote{ display:block !important; font-size:.5rem !important; text-align:center !important; padding:.28rem .2rem !important; margin-top:.1rem !important; }
+  .la-year{ display:none !important; }
+  #landing-about > *{ width:100% !important; text-align:center !important; }
   #mob-preview-btn{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:.5rem;
-    width:100%;
-    margin-top:1rem;
-    padding:.6rem 1rem;
-    font-family:'Cinzel',serif;
-    font-size:.52rem;
-    letter-spacing:.25em;
-    text-transform:uppercase;
-    color:rgba(201,149,12,.9);
-    background:rgba(201,149,12,.06);
-    border:1px solid rgba(201,149,12,.35);
-    cursor:pointer;
-    transition:all .3s;
-    animation:btn-pulse 3s ease-in-out infinite;
+    display:flex !important; align-items:center; justify-content:center; gap:.4rem;
+    width:100%; margin-top:.55rem; padding:.45rem .8rem;
+    font-family:'Cinzel',serif; font-size:.43rem; letter-spacing:.18em; text-transform:uppercase;
+    color:rgba(201,149,12,.9); background:rgba(201,149,12,.06);
+    border:1px solid rgba(201,149,12,.35); cursor:pointer;
+    transition:all .3s; animation:btn-pulse 3s ease-in-out infinite;
   }
-  #mob-preview-btn:active{
-    background:rgba(201,149,12,.14);
-    animation:none;
-  }
-  #mob-preview-btn.hidden{ display:none; }
-
-  /* hide verbose items on small screens */
-  .la-bio,.la-quote,.la-year{ display:none; }
-  .la-name{font-size:1.85rem;}
-  .la-stats-grid{gap:.3rem;margin-bottom:.4rem;}
-  .la-stat{padding:.4rem .3rem;}
-  .la-stat-num{font-size:1rem;}
-  .la-item{margin-bottom:.4rem;}
+  #mob-preview-btn:active{ background:rgba(201,149,12,.14); animation:none; }
+  #mob-preview-btn.hidden{ display:none !important; }
+  #book-slot{ display:none; flex-shrink:0; opacity:0; transform:translateY(24px) scale(0.92); transition:opacity .65s cubic-bezier(.2,0,.1,1), transform .65s cubic-bezier(.2,0,.1,1); }
+  #book-slot.mob-revealed{ display:flex; opacity:1; transform:translateY(0) scale(1); }
 }
-
+@media(max-width:380px){
+  #landing-about{ width:92vw !important; padding:.55rem .8rem .65rem !important; }
+  .la-name{ font-size:1.25rem !important; }
+}
 #scene{
   position:relative;z-index:1;display:flex;align-items:center;justify-content:center;
-  gap:5vw;
-  width:100vw;height:100vh;
+  gap:5vw; width:100%;height:100vh; box-sizing:border-box;
 }
+@media(max-width:900px){
+  #scene{ height:auto !important; min-height:100vh !important; min-height:100svh !important; }
+}
+
 
 /* ══ CLOSED BOOK ══ */
 #book-slot{
@@ -954,6 +980,82 @@ body::after{
 
 
 /* ══════════════════════════════════════════
+   DESKTOP LANDING PREMIUM BEAUTIFICATION
+══════════════════════════════════════════ */
+/* Dust motes floating up */
+#dust-motes {
+  position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+}
+.dust-mote {
+  position:absolute;border-radius:50%;
+  background:rgba(201,149,12,0.5);
+  animation:dust-float linear infinite;
+  filter:blur(0.4px);
+}
+@keyframes dust-float {
+  0%   { transform:translateY(0) translateX(0) scale(1); opacity:0; }
+  8%  { opacity:1; }
+  85%  { opacity:0.5; }
+  100% { transform:translateY(-100vh) translateX(var(--dx,20px)) scale(0.3); opacity:0; }
+}
+
+/* Light rays from bottom center */
+#light-rays {
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:200%;height:120%;z-index:0;pointer-events:none;
+  background:conic-gradient(
+    from 248deg at 50% 100%,
+    transparent 0deg,
+    rgba(201,149,12,.02) 5deg,
+    transparent 10deg,
+    rgba(201,149,12,.015) 15deg,
+    transparent 22deg,
+    rgba(201,149,12,.025) 27deg,
+    transparent 32deg,
+    rgba(180,100,10,.01) 36deg,
+    transparent 42deg,
+    rgba(201,149,12,.018) 47deg,
+    transparent 52deg,
+    rgba(201,149,12,.012) 58deg,
+    transparent 64deg
+  );
+  animation: rays-sway 12s ease-in-out infinite;
+}
+@keyframes rays-sway {
+  0%,100% { opacity:1; transform:translateX(-50%) scaleX(1); }
+  50%      { opacity:.7; transform:translateX(-50%) scaleX(1.08); }
+}
+
+/* Vignette overlay */
+#vignette {
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 100% 100% at 50% 50%, transparent 50%, rgba(0,0,0,.62) 100%);
+}
+
+@media(min-width:901px) {
+  #landing-about {
+    box-shadow:
+      0 0 60px rgba(201,149,12,.08),
+      0 0 120px rgba(201,149,12,.04),
+      inset 0 1px 0 rgba(201,149,12,.12);
+  }
+  #landing-about:hover {
+    border-color: rgba(201,149,12,.38);
+    box-shadow: 0 0 80px rgba(201,149,12,.13), 0 0 160px rgba(201,149,12,.06), inset 0 1px 0 rgba(201,149,12,.18);
+    transition: border-color .6s, box-shadow .6s;
+  }
+  .la-name { animation: name-glow 4s ease-in-out infinite; }
+  @keyframes name-glow {
+    0%,100% { text-shadow: 0 0 40px rgba(201,149,12,.35), 0 2px 12px rgba(0,0,0,.9); }
+    50%      { text-shadow: 0 0 70px rgba(201,149,12,.6), 0 2px 12px rgba(0,0,0,.9), 0 0 140px rgba(201,149,12,.2); }
+  }
+  .la-stat { transition: all .3s; cursor:default; }
+  .la-stat:hover { background:rgba(201,149,12,.07); border-color:rgba(201,149,12,.25); box-shadow:0 0 12px rgba(201,149,12,.08); }
+  #closed-book { filter:drop-shadow(0 20px 40px rgba(0,0,0,.8)) drop-shadow(0 0 30px rgba(201,149,12,.1)); transition:transform .5s cubic-bezier(.4,0,.2,1),filter .5s,opacity .7s; }
+  #closed-book:hover { filter:drop-shadow(0 30px 60px rgba(0,0,0,.9)) drop-shadow(0 0 50px rgba(201,149,12,.22)); }
+}
+
+/* ══════════════════════════════════════════
    DESKTOP — BOOK LAYOUT
 ══════════════════════════════════════════ */
 #open-book{
@@ -984,8 +1086,12 @@ body::after{
    MOBILE BOOK — single page view
 ══════════════════════════════════════════ */
 @media(max-width:768px){
-  html,body{
-    height:auto;width:100%;
+  html{
+    height:100%;width:100%;
+  }
+  body{
+    min-height:100% !important;
+    width:100%;
   }
   /* lock scroll only when book is open */
   body.book-open{
@@ -1209,6 +1315,9 @@ body::after{
 </head>
 <body>
 <canvas id="starfield"></canvas>
+<div id="light-rays"></div>
+<div id="vignette"></div>
+<div id="dust-motes"></div>
 <div class="amb-orb amb-orb-1"></div>
 <div class="amb-orb amb-orb-2"></div>
 <div class="amb-orb amb-orb-3"></div>
@@ -1279,6 +1388,10 @@ body::after{
     <div class="holo-particles" id="holo-particles"></div>
     <div class="holo-text">Thank You</div>
     <div class="holo-sub">for reading this tome</div>
+    <div style="height:.8rem"></div>
+    <div style="font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.32em;text-transform:uppercase;color:rgba(201,149,12,.55);margin-bottom:.6rem;position:relative;z-index:2;">— · —</div>
+    <div style="font-family:'Pinyon Script',cursive;font-size:2.4rem;background:linear-gradient(135deg,rgba(201,149,12,.7) 0%,var(--gold3) 50%,rgba(201,149,12,.7) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 14px rgba(201,149,12,.35));position:relative;z-index:2;line-height:1.1;">Visit Again</div>
+    <div style="font-family:'Cinzel',serif;font-size:.45rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(201,149,12,.42);margin-top:.4rem;position:relative;z-index:2;">The folio awaits your return</div>
     <div class="holo-scanlines"></div>
   </div>
   <button class="holo-close" onclick="document.getElementById('hologram').classList.remove('active')">✕ CLOSE</button>
@@ -1306,21 +1419,25 @@ body::after{
     <p class="la-bio">An engineer of sky and silicon — bridging rigorous academic research and the frontier of autonomous aerial intelligence through AI, UAV systems, and swarm robotics.</p>
 
     <div class="la-stats-grid">
-      <div class="la-stat">
-        <div class="la-stat-num">12<span style="font-size:.6rem;color:var(--crimson)">+</span></div>
+      <div class="la-stat la-stat-clickable" onclick="statOpenBook(3)" title="View Publications">
+        <div class="la-stat-num"><span class="count-num" data-target="12" data-suffix="+">0</span></div>
         <div class="la-stat-label">Papers</div>
+        <div class="la-stat-hint">↗ Publications</div>
       </div>
-      <div class="la-stat">
-        <div class="la-stat-num">200<span style="font-size:.6rem;color:var(--crimson)">+</span></div>
+      <div class="la-stat la-stat-clickable" onclick="statOpenBook(3)" title="View Citations">
+        <div class="la-stat-num"><span class="count-num" data-target="200" data-suffix="+">0</span></div>
         <div class="la-stat-label">Citations</div>
+        <div class="la-stat-hint">↗ Publications</div>
       </div>
-      <div class="la-stat">
-        <div class="la-stat-num">3</div>
+      <div class="la-stat la-stat-clickable" onclick="statOpenBook(0)" title="View Scholar Profile">
+        <div class="la-stat-num"><span class="count-num" data-target="3" data-suffix="">0</span></div>
         <div class="la-stat-label">Patents</div>
+        <div class="la-stat-hint">↗ The Scholar</div>
       </div>
-      <div class="la-stat">
-        <div class="la-stat-num">6<span style="font-size:.6rem;color:var(--crimson)">+</span></div>
+      <div class="la-stat la-stat-clickable" onclick="statOpenBook(0)" title="View Experience">
+        <div class="la-stat-num"><span class="count-num" data-target="6" data-suffix="+">0</span></div>
         <div class="la-stat-label">Yrs Exp.</div>
+        <div class="la-stat-hint">↗ Experience</div>
       </div>
     </div>
 
@@ -2025,6 +2142,11 @@ function mobileRender(idx, dir) {
   if (activeTab) activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
   elMobPrev.classList.toggle('dim', idx === 0);
   elMobNext.classList.toggle('dim', idx === MOB_PAGES.length - 1);
+
+  // Show hologram on last mobile page
+  if (idx === MOB_PAGES.length - 1) {
+    setTimeout(() => document.getElementById('hologram').classList.add('active'), 800);
+  }
 }
 
 function mobileGoToChapter(ci) {
@@ -2211,16 +2333,85 @@ document.getElementById('mob-close-btn').addEventListener('click', () => { hideB
 })();
 
 /* ══════════════════════════════════════════
-   SHOW HOLOGRAM ON LAST PAGE
+   DUST MOTES — premium desktop ambient particles
 ══════════════════════════════════════════ */
+(function() {
+  const container = document.getElementById('dust-motes');
+  if (!container) return;
+  const isMob = () => window.innerWidth <= 900;
+  function spawnMotes() {
+    if (isMob()) return;
+    container.innerHTML = '';
+    const count = 28;
+    for (let i = 0; i < count; i++) {
+      const m = document.createElement('div');
+      m.className = 'dust-mote';
+      const size = Math.random() * 2.5 + 0.8;
+      const startX = Math.random() * 100;
+      const dx = (Math.random() - 0.5) * 120;
+      const dur = 8 + Math.random() * 18;
+      const delay = Math.random() * 20;
+      const opacity = 0.1 + Math.random() * 0.4;
+      m.style.cssText = `
+        left:${startX}%;
+        bottom:${Math.random() * 20}%;
+        width:${size}px; height:${size}px;
+        --dx:${dx}px;
+        animation-duration:${dur}s;
+        animation-delay:-${delay}s;
+        opacity:${opacity};
+      `;
+      container.appendChild(m);
+    }
+  }
+  spawnMotes();
+  window.addEventListener('resize', spawnMotes);
+})();
+
+
 function maybeShowHologram() {
-  // Show hologram only when user reaches the very last spread
   if (!IS_MOBILE() && currentSpread === SPREADS.length - 1) {
     setTimeout(() => document.getElementById('hologram').classList.add('active'), 800);
   }
 }
-// Hook into nav-next button
 document.getElementById('btn-next').addEventListener('click', () => setTimeout(maybeShowHologram, 700));
+
+/* ══════════════════════════════════════════
+   STAT TILES — click to open book at chapter
+══════════════════════════════════════════ */
+function statOpenBook(chapterIdx) {
+  openBook();
+  setTimeout(() => {
+    if (IS_MOBILE()) mobileGoToChapter(chapterIdx);
+    else             desktopGoToChapter(chapterIdx);
+  }, 700);
+}
+
+/* ══ COUNT-UP ANIMATION ══ */
+function runCountUp() {
+  document.querySelectorAll('.count-num').forEach(el => {
+    const target  = +el.dataset.target;
+    const suffix  = el.dataset.suffix || '';
+    const dur     = target >= 100 ? 1800 : 1200;
+    const steps   = 40;
+    const step    = dur / steps;
+    let current   = 0;
+    const inc     = target / steps;
+    const timer   = setInterval(() => {
+      current += inc;
+      if (current >= target) {
+        el.textContent = target + suffix;
+        clearInterval(timer);
+      } else {
+        el.textContent = Math.floor(current) + suffix;
+      }
+    }, step);
+  });
+}
+// Run on page load
+window.addEventListener('load', () => setTimeout(runCountUp, 600));
+
+/* Mobile centering handled entirely by CSS flex layout */
 
 </script>
 </body>
