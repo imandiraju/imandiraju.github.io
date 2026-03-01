@@ -80,19 +80,44 @@ body::after{
 
 /* ══ SIDE PANELS (desktop only) ══ */
 .side-panel{
-  position:fixed;top:50%;transform:translateY(-50%);
-  width:200px;padding:1.4rem 1.2rem;z-index:2;
-  background:rgba(15,8,4,.7);
-  border:1px solid rgba(201,149,12,.18);
-  backdrop-filter:blur(12px);
-  opacity:0;transition:opacity 1s ease, transform 1s ease;
+  position:fixed;top:50%;
+  width:200px;padding:1.4rem 1.2rem;z-index:60;
+  background:rgba(12,6,3,.88);
+  border:1px solid rgba(201,149,12,.22);
+  backdrop-filter:blur(14px);
+  opacity:0;transition:opacity .45s ease, transform .45s ease;
   pointer-events:none;
 }
 .side-panel.visible{opacity:1;pointer-events:auto;}
-#panel-left{left:20px;transform:translateY(-50%) translateX(-20px);}
+#panel-left{
+  left:20px;
+  transform:translateY(-50%) translateX(-230px);
+}
 #panel-left.visible{transform:translateY(-50%) translateX(0);}
-#panel-right{right:20px;transform:translateY(-50%) translateX(20px);}
+#panel-right{
+  right:20px;
+  transform:translateY(-50%) translateX(230px);
+}
 #panel-right.visible{transform:translateY(-50%) translateX(0);}
+
+/* ══ PANEL TOGGLE TABS (only when book open) ══ */
+.panel-tab{
+  position:fixed;top:50%;z-index:61;
+  display:none;
+  align-items:center;justify-content:center;
+  width:22px;height:64px;
+  background:rgba(20,10,4,.82);
+  border:1px solid rgba(201,149,12,.22);
+  color:rgba(201,149,12,.65);
+  font-family:'Cinzel',serif;font-size:.42rem;
+  letter-spacing:.12em;writing-mode:vertical-rl;
+  cursor:pointer;
+  transition:all .2s;
+}
+.panel-tab:hover{background:rgba(40,20,8,.92);color:var(--gold3);border-color:rgba(201,149,12,.5);}
+.panel-tab.book-open{display:flex;}
+#tab-left{left:0;transform:translateY(-50%);border-radius:0 4px 4px 0;}
+#tab-right{right:0;transform:translateY(-50%);border-radius:4px 0 0 4px;}
 .side-panel::before{
   content:'';position:absolute;inset:8px;
   border:1px solid rgba(201,149,12,.08);pointer-events:none;
@@ -216,14 +241,99 @@ body::after{
   }
 }
 
+/* ══ LANDING ABOUT SECTION ══ */
+#landing-about{
+  position:relative;z-index:5;
+  width:300px;flex-shrink:0;
+  padding:2.2rem 1.8rem;
+  background:linear-gradient(160deg,rgba(15,8,4,.82) 0%,rgba(10,5,2,.78) 100%);
+  border:1px solid rgba(201,149,12,.18);
+  backdrop-filter:blur(16px);
+  opacity:0;transform:translateX(-30px);
+  transition:opacity 1.1s ease, transform 1.1s ease;
+  pointer-events:none;
+}
+#landing-about.visible{opacity:1;transform:translateX(0);pointer-events:auto;}
+#landing-about::before{
+  content:'';position:absolute;inset:10px;
+  border:1px solid rgba(201,149,12,.07);pointer-events:none;
+}
+.la-title{
+  font-family:'Cinzel',serif;font-size:.42rem;letter-spacing:.28em;
+  text-transform:uppercase;color:rgba(201,149,12,.55);
+  border-bottom:1px solid rgba(201,149,12,.15);padding-bottom:.5rem;margin-bottom:.85rem;
+}
+.la-name{
+  font-family:'Pinyon Script',cursive;font-size:2rem;
+  color:var(--gold3);line-height:1;margin-bottom:.3rem;
+  text-shadow:0 2px 14px rgba(0,0,0,.8);
+}
+.la-role{
+  font-family:'IM Fell English',serif;font-style:italic;
+  font-size:.68rem;color:rgba(201,149,12,.55);margin-bottom:.9rem;
+}
+.la-divider{
+  width:100%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(201,149,12,.28),transparent);
+  margin:.65rem 0;
+}
+.la-bio{
+  font-family:'IM Fell English',serif;font-size:.7rem;
+  color:rgba(245,235,210,.7);line-height:1.82;margin-bottom:.7rem;
+}
+.la-item{display:flex;flex-direction:column;gap:.12rem;margin-bottom:.6rem;}
+.la-label{font-size:.5rem;color:rgba(201,149,12,.42);letter-spacing:.08em;font-family:'Cinzel',serif;text-transform:uppercase;}
+.la-value{font-size:.68rem;color:rgba(245,217,122,.85);font-weight:700;}
+.la-bar{height:2px;background:rgba(201,149,12,.1);margin-top:.2rem;border-radius:1px;overflow:hidden;}
+.la-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold3));animation:bar-grow 1.5s ease forwards;}
+.la-quote{
+  font-family:'IM Fell English',serif;font-style:italic;
+  font-size:.64rem;color:rgba(201,149,12,.5);
+  border-left:2px solid rgba(201,149,12,.25);padding-left:.7rem;
+  line-height:1.75;margin-top:.6rem;
+}
+@media(max-width:900px){
+  #landing-about{
+    display:block!important;
+    width:90vw;
+    max-width:380px;
+    padding:1.4rem 1.4rem;
+    transform:translateX(0)!important;  /* no horizontal slide on mobile */
+  }
+  /* on mobile, stack vertically */
+  #scene{
+    flex-direction:column;
+    justify-content:center;
+    gap:2vh;
+    overflow-y:auto;
+    padding:1.5rem 0;
+  }
+  #book-slot{
+    flex-shrink:0;
+  }
+  /* hide verbose items on small screens to keep it compact */
+  .la-bio, .la-quote{ display:none; }
+}
+
 #scene{
   position:relative;z-index:1;display:flex;align-items:center;justify-content:center;
-  width:100vw;height:100vh;perspective:2200px;
+  gap:5vw;
+  width:100vw;height:100vh;
 }
 
 /* ══ CLOSED BOOK ══ */
+#book-slot{
+  position:relative;
+  width:240px;
+  height:400px;
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  perspective:2200px;
+}
 #closed-book{
-  position:absolute;width:240px;height:340px;
+  position:relative;width:240px;height:340px;
   transform-style:preserve-3d;
   transform:rotateY(-22deg) rotateX(6deg);
   cursor:pointer;transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .7s;z-index:10;
@@ -336,15 +446,16 @@ body::after{
   position:absolute;bottom:-38px;left:50%;transform:translateX(-50%);
   width:270px;height:28px;
   background:radial-gradient(ellipse,rgba(0,0,0,.7) 0%,transparent 75%);
-  filter:blur(8px);
+  filter:blur(8px);pointer-events:none;
 }
 
 #open-btn{
-  position:absolute;bottom:-48px;left:50%;transform:translateX(-50%);
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
   font-family:'Cinzel',serif;font-size:.54rem;letter-spacing:.28em;text-transform:uppercase;
   color:rgba(201,149,12,.7);background:none;
   border:1px solid rgba(201,149,12,.22);cursor:pointer;
   padding:.38rem .9rem;transition:all .25s;animation:hint 2.5s infinite;
+  white-space:nowrap;
 }
 #open-btn:hover{color:var(--gold3);border-color:rgba(201,149,12,.5);animation:none;}
 #open-btn.hidden{opacity:0;pointer-events:none;}
@@ -578,7 +689,7 @@ body::after{
 #page-flipper.flipping-forward{animation:flip-fwd .65s cubic-bezier(.4,0,.2,1) forwards;}
 #page-flipper.flipping-backward{animation:flip-bwd .65s cubic-bezier(.4,0,.2,1) forwards;}
 @keyframes flip-fwd{0%{transform:rotateY(0deg)}100%{transform:rotateY(-180deg)}}
-@keyframes flip-bwd{0%{transform:rotateY(-180deg)}100%{transform:rotateY(0deg)}}
+@keyframes flip-bwd{0%{transform:rotateY(0deg)}100%{transform:rotateY(180deg)}}
 
 /* nav */
 .nav-arrow{
@@ -664,19 +775,23 @@ body::after{
 ══════════════════════════════════════════ */
 @media(max-width:768px){
   html,body{
-    overflow:hidden;
     height:100%;width:100%;
+  }
+  /* lock scroll only when book is open */
+  body.book-open{
+    overflow:hidden;
     touch-action:pan-y;
   }
   #scene{
     width:100vw;height:100dvh;
     perspective:none;
-    overflow:hidden;
   }
 
   /* ── CLOSED BOOK on mobile ── */
+  #book-slot{
+    perspective:2200px;
+  }
   #closed-book{
-    position:relative;
     transform:rotateY(-14deg) rotateX(5deg) scale(.9);
   }
   #open-btn{
@@ -932,7 +1047,37 @@ body::after{
 
 <div id="scene">
 
-  <!-- CLOSED BOOK -->
+  <!-- LANDING ABOUT ME (left side, desktop only) -->
+  <div id="landing-about">
+    <div class="la-title">About the Author</div>
+    <div class="la-name">Dr. Imandi Raju</div>
+    <div class="la-role">Asst. Professor, CSE &nbsp;·&nbsp; Founder, Akash Labs</div>
+    <div class="la-divider"></div>
+    <p class="la-bio">An engineer of sky and silicon — Dr. Imandi Raju bridges rigorous academic research and the frontier of autonomous aerial intelligence. His work spans UAV systems, edge AI, and swarm robotics.</p>
+    <div class="la-item">
+      <span class="la-label">Institution</span>
+      <span class="la-value">BITS Pilani</span>
+    </div>
+    <div class="la-item">
+      <span class="la-label">Domain</span>
+      <span class="la-value">AI · NLP · Vision · UAV</span>
+    </div>
+    <div class="la-item">
+      <span class="la-label">Publications</span>
+      <span class="la-value">12+</span>
+      <div class="la-bar"><div class="la-bar-fill" style="--w:80%"></div></div>
+    </div>
+    <div class="la-item">
+      <span class="la-label">Citations</span>
+      <span class="la-value">200+</span>
+      <div class="la-bar"><div class="la-bar-fill" style="--w:65%"></div></div>
+    </div>
+    <div class="la-divider"></div>
+    <div class="la-quote">"The sky is not the limit — it is the laboratory."</div>
+  </div>
+
+  <!-- CLOSED BOOK (in flex slot) -->
+  <div id="book-slot">
   <div id="closed-book">
     <div class="cb-shadow"></div>
     <div class="cb-spine">
@@ -960,6 +1105,11 @@ body::after{
     </div>
     <button id="open-btn"><svg width="10" height="10" viewBox="0 0 10 10" fill="rgba(201,149,12,0.8)" style="margin-right:6px"><polygon points="5,0 6.2,3.8 10,3.8 7,6.1 8.1,10 5,7.8 1.9,10 3,6.1 0,3.8 3.8,3.8"/></svg> Open the Book <svg width="10" height="10" viewBox="0 0 10 10" fill="rgba(201,149,12,0.8)" style="margin-left:6px"><polygon points="5,0 6.2,3.8 10,3.8 7,6.1 8.1,10 5,7.8 1.9,10 3,6.1 0,3.8 3.8,3.8"/></svg></button>
   </div>
+  </div><!-- end #book-slot -->
+
+<!-- PANEL TOGGLE TABS -->
+<div class="panel-tab" id="tab-left" title="About">About</div>
+<div class="panel-tab" id="tab-right" title="Impact">Impact</div>
 
   <!-- OPEN BOOK -->
   <div id="open-book">
@@ -1319,6 +1469,9 @@ const elMobChapLbl = $('mob-chapter-label');
 const elMobClose   = $('mob-close-btn');
 const elMobTabs    = document.querySelectorAll('.mob-tab');
 
+// Landing about panel
+const landingAbout = document.getElementById('landing-about');
+
 /* ══════════════════════════════════════════
    STATE
 ══════════════════════════════════════════ */
@@ -1364,6 +1517,9 @@ CHAPTERS.forEach((ch, i) => {
    OPEN / CLOSE BOOK
 ══════════════════════════════════════════ */
 function openBook() {
+  document.body.classList.add('book-open');
+  // Hide the landing about panel (both desktop and mobile)
+  if (landingAbout) { landingAbout.classList.remove('visible'); landingAbout.style.pointerEvents='none'; }
   elClosed.classList.add('hidden');
   elOpenBtn.classList.add('hidden');
   setTimeout(() => {
@@ -1380,6 +1536,7 @@ function openBook() {
 }
 
 function closeBook() {
+  document.body.classList.remove('book-open');
   elOpen.classList.remove('visible');
   elCloseBtn.classList.remove('visible');
   elMobTopbar.classList.remove('visible');
@@ -1389,6 +1546,8 @@ function closeBook() {
     elOpenBtn.classList.remove('hidden');
     currentSpread = 0;
     mobilePage = 0;
+    // Restore about panel
+    if (landingAbout) { landingAbout.classList.add('visible'); landingAbout.style.pointerEvents='auto'; }
   }, 500);
 }
 
@@ -1422,15 +1581,32 @@ function desktopGoTo(target) {
   const fwd = target > currentSpread;
   isAnimating = true;
   const from = SPREADS[currentSpread], to = SPREADS[target];
-  elFlipFront.innerHTML = `<div class="page-content">${fwd ? from.right : from.left}</div>`;
-  elFlipBack.innerHTML  = `<div class="page-content">${fwd ? to.left   : to.right}</div>`;
-  buildDots(elFlipFront); buildDots(elFlipBack);
-  elFlipper.style.left = fwd ? '50%' : '0';
-  elFlipper.style.transformOrigin = fwd ? 'left center' : 'right center';
+
+  if (fwd) {
+    // Forward: flipper on right half, flips left (0 → -180)
+    // Front = current right page, Back = incoming left page
+    elFlipFront.innerHTML = `<div class="page-content">${from.right}</div>`;
+    elFlipBack.innerHTML  = `<div class="page-content">${to.left}</div>`;
+    buildDots(elFlipFront); buildDots(elFlipBack);
+    elFlipper.style.left = '50%';
+    elFlipper.style.transformOrigin = 'left center';
+  } else {
+    // Backward: pre-render right page, flipper on left half, flips right (0 → 180)
+    // Front = current left page (lifts to reveal new left underneath), Back = previous right page
+    elContentR.innerHTML = to.right; buildDots(elContentR); // pre-update right page
+    elFlipFront.innerHTML = `<div class="page-content">${from.left}</div>`;
+    elFlipBack.innerHTML  = `<div class="page-content">${to.right}</div>`;
+    buildDots(elFlipFront); buildDots(elFlipBack);
+    elFlipper.style.left = '0';
+    elFlipper.style.transformOrigin = 'right center';
+  }
+
   elFlipper.style.display = 'block';
   elFlipper.classList.remove('flipping-forward', 'flipping-backward');
   void elFlipper.offsetWidth;
   elFlipper.classList.add(fwd ? 'flipping-forward' : 'flipping-backward');
+  playPageTurn();
+
   setTimeout(() => {
     currentSpread = target;
     desktopRender(currentSpread);
@@ -1452,44 +1628,51 @@ document.addEventListener('keydown', e => {
 /* ══════════════════════════════════════════
    MOBILE ENGINE
 ══════════════════════════════════════════ */
-/* ══ Mobile uses only right-side pages — no left/right alternation ══ */
-const MOB_PAGES = ALL_PAGES.filter(p => p.side === 'right');
+/* ══ Mobile uses ALL pages (left + right alternating) ══ */
+const MOB_PAGES = ALL_PAGES;
 const MOB_CHAPTER_START = {};
 MOB_PAGES.forEach((p, i) => {
   if (MOB_CHAPTER_START[p.chapterIdx] === undefined) MOB_CHAPTER_START[p.chapterIdx] = i;
 });
 
-// Page turn sound via Web Audio API
+// Page turn sound via Web Audio API — smooth, natural book sound
 function playPageTurn() {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const duration = 0.9;
+    const duration = 0.55;
     const sampleRate = ctx.sampleRate;
     const bufLen = Math.floor(sampleRate * duration);
-    const buf = ctx.createBuffer(1, bufLen, sampleRate);
-    const data = buf.getChannelData(0);
-    // Generate realistic paper rustle: layered noise with envelope
-    for (let i = 0; i < bufLen; i++) {
-      const t = i / sampleRate;
-      // Envelope: fast attack, slow decay
-      const env = Math.exp(-t * 4.5) * (1 - Math.exp(-t * 60));
-      // Mix white noise with filtered swoosh
-      const noise = (Math.random() * 2 - 1);
-      const swoosh = Math.sin(2 * Math.PI * (180 + 320 * (1 - t / duration)) * t) * 0.08;
-      data[i] = env * (noise * 0.55 + swoosh) * 0.45;
+    const buf = ctx.createBuffer(2, bufLen, sampleRate); // stereo for width
+
+    for (let ch = 0; ch < 2; ch++) {
+      const data = buf.getChannelData(ch);
+      for (let i = 0; i < bufLen; i++) {
+        const t = i / sampleRate;
+        // Smooth envelope: gentle rise, long soft decay
+        const env = Math.pow(Math.sin(Math.PI * t / duration), 0.4) * Math.exp(-t * 5.5);
+        // Very soft white noise — paper texture
+        const noise = (Math.random() * 2 - 1) * 0.22;
+        // Gentle low swoosh
+        const swoosh = Math.sin(2 * Math.PI * (90 + 140 * (1 - t / duration)) * t) * 0.04;
+        // Subtle flutter in the middle
+        const flutter = (t > 0.08 && t < 0.35) ? (Math.random() * 2 - 1) * 0.09 * Math.exp(-(t - 0.2) * (t - 0.2) * 80) : 0;
+        data[i] = env * (noise + swoosh + flutter);
+      }
     }
+
+    const lowpass = ctx.createBiquadFilter();
+    lowpass.type = 'lowpass';
+    lowpass.frequency.value = 1800;
+    lowpass.Q.value = 0.5;
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.55, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0, ctx.currentTime + duration);
+
     const src = ctx.createBufferSource();
     src.buffer = buf;
-    // Low-pass filter for soft paper feel
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.value = 2800;
-    filter.Q.value = 0.7;
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.7, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0, ctx.currentTime + duration);
-    src.connect(filter);
-    filter.connect(gain);
+    src.connect(lowpass);
+    lowpass.connect(gain);
     gain.connect(ctx.destination);
     src.start();
     src.onended = () => ctx.close();
@@ -1500,16 +1683,22 @@ function mobileRender(idx, dir) {
   mobilePage = idx;
   const pg = MOB_PAGES[idx];
 
-  /* Always show on the right panel — feels like a normal book page */
-  elOpen.classList.add('show-right');
-  elContentR.innerHTML = pg.content;
-  buildDots(elContentR);
+  /* Show left or right panel based on page side */
+  if (pg.side === 'left') {
+    elOpen.classList.remove('show-right');
+    elContentL.innerHTML = pg.content;
+    buildDots(elContentL);
+  } else {
+    elOpen.classList.add('show-right');
+    elContentR.innerHTML = pg.content;
+    buildDots(elContentR);
+  }
 
   if (dir !== 0) {
     mobileAnim = true;
     const slideOut = dir > 0 ? 'mob-slide-out-left' : 'mob-slide-out-right';
     const slideIn  = dir > 0 ? 'mob-slide-in-right'  : 'mob-slide-in-left';
-    const panel = document.getElementById('page-r');
+    const panel = pg.side === 'left' ? document.getElementById('page-l') : document.getElementById('page-r');
     panel.classList.add(slideOut);
     playPageTurn();
     setTimeout(() => {
@@ -1623,29 +1812,55 @@ window.addEventListener('resize', () => {
 })();
 
 /* ══════════════════════════════════════════
-   SIDE PANELS — show/hide with book
+   LANDING ABOUT — show on page load
+══════════════════════════════════════════ */
+setTimeout(() => { if (landingAbout) landingAbout.classList.add('visible'); }, 400);
+
+/* ══════════════════════════════════════════
+   SIDE PANELS — click tab to toggle
 ══════════════════════════════════════════ */
 const panelLeft = document.getElementById('panel-left');
 const panelRight = document.getElementById('panel-right');
+const tabLeft = document.getElementById('tab-left');
+const tabRight = document.getElementById('tab-right');
 
-function showSidePanels() {
-  if (!IS_MOBILE() && window.innerWidth > 1100) {
-    panelLeft.classList.add('visible');
-    panelRight.classList.add('visible');
+function showBookPanelTabs() {
+  if (!IS_MOBILE()) {
+    tabLeft.classList.add('book-open');
+    tabRight.classList.add('book-open');
   }
 }
-function hideSidePanels() {
+function hideBookPanelTabs() {
+  tabLeft.classList.remove('book-open');
+  tabRight.classList.remove('book-open');
   panelLeft.classList.remove('visible');
   panelRight.classList.remove('visible');
 }
 
-// Patch openBook and closeBook to handle panels
+tabLeft.addEventListener('click', () => {
+  const showing = panelLeft.classList.contains('visible');
+  panelLeft.classList.toggle('visible', !showing);
+  panelRight.classList.remove('visible'); // close other
+});
+tabRight.addEventListener('click', () => {
+  const showing = panelRight.classList.contains('visible');
+  panelRight.classList.toggle('visible', !showing);
+  panelLeft.classList.remove('visible'); // close other
+});
 
+// Hide landing about when book opens, show when book closes
 const elOpenBtnEl = document.getElementById('open-btn');
-elOpenBtnEl.addEventListener('click', () => setTimeout(showSidePanels, 500));
-document.getElementById('closed-book').addEventListener('click', () => setTimeout(showSidePanels, 500));
-document.getElementById('close-btn').addEventListener('click', hideSidePanels);
-document.getElementById('mob-close-btn').addEventListener('click', hideSidePanels);
+function hideLandingAbout() {
+  if (landingAbout) { landingAbout.classList.remove('visible'); landingAbout.style.pointerEvents='none'; }
+}
+function showLandingAbout() {
+  if (landingAbout) setTimeout(() => { landingAbout.classList.add('visible'); landingAbout.style.pointerEvents='auto'; }, 300);
+}
+
+elOpenBtnEl.addEventListener('click', () => { hideLandingAbout(); setTimeout(showBookPanelTabs, 500); });
+document.getElementById('closed-book').addEventListener('click', () => { hideLandingAbout(); setTimeout(showBookPanelTabs, 500); });
+document.getElementById('close-btn').addEventListener('click', () => { hideBookPanelTabs(); showLandingAbout(); });
+document.getElementById('mob-close-btn').addEventListener('click', () => { hideBookPanelTabs(); showLandingAbout(); });
 
 /* ══════════════════════════════════════════
    HOLOGRAM PARTICLES
@@ -1668,8 +1883,8 @@ document.getElementById('mob-close-btn').addEventListener('click', hideSidePanel
    SHOW HOLOGRAM ON LAST PAGE
 ══════════════════════════════════════════ */
 function maybeShowHologram() {
-  // Show hologram when user reaches the last spread (contact page)
-  if (!IS_MOBILE() && currentSpread >= CHAPTERS[CHAPTERS.length-1].spreads.length - 1) {
+  // Show hologram only when user reaches the very last spread
+  if (!IS_MOBILE() && currentSpread === SPREADS.length - 1) {
     setTimeout(() => document.getElementById('hologram').classList.add('active'), 800);
   }
 }
